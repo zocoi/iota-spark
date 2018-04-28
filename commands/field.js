@@ -35,7 +35,12 @@ exports.command = async function(client, message) {
         'Your query is too short, try again with longer query'
       )
     }
-    const nodes = graph.filter(node => node.field.name.includes(query))
+    const nodes = graph.filter(node =>
+      node.field.name.toLowerCase().includes(query.toLowerCase())
+    )
+    if (nodes.length == 0) {
+      return message.channel.send('Could not find any node with such name')
+    }
     if (nodes.length > 3) {
       return message.channel.send(
         'More than 3 nodes found, try again with longer query'
