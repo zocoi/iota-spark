@@ -52,6 +52,19 @@ exports.command = async function(client, message) {
   }
 }
 
+function iri_versions(graph) {
+  const map = {}
+  graph.forEach(node => {
+    map[node.iri.appVersion] = map[node.iri.appVersion] || 0
+    map[node.iri.appVersion] += 1
+  })
+  return Object.keys(map)
+    .map(k => {
+      return `${k}: ${map[k]}`
+    })
+    .join('\n')
+}
+
 function sendStats(graph, stats, message) {
   const nodesCount = graph.length
   const embed = new discord.RichEmbed()
@@ -62,6 +75,7 @@ function sendStats(graph, stats, message) {
   )
   embed.addField('TOTAL IOTAS DONATED:', humanFormat(stats.totalDonated))
   embed.addField('IOTAS TRANSFERRED:', humanFormat(stats.totalTransferred))
+  embed.addField('IRI VERIONS:', iri_versions(graph))
   embed.setTimestamp()
   embed.setColor(COLOR)
   message.channel.send('', { embed })
